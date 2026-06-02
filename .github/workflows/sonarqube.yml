@@ -19,17 +19,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
           
       - name: Install dependencies
         run: npm ci
         
-      - name: Run tests with coverage (allow failures)
-        run: npm run test -- --watch=false --code-coverage --no-browsers || true
+      - name: Run tests with ChromeHeadless
+        run: |
+          npm install --save-dev karma-chrome-launcher
+          npm run test -- --watch=false --code-coverage --browsers=ChromeHeadless || true
         
       - name: SonarQube Scan
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONATOR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           npx sonar-scanner \
             -Dsonar.host.url=https://sonarcloud.io \

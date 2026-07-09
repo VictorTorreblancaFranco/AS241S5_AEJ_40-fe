@@ -27,9 +27,14 @@ export interface ApiResponse<T> {
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8080/api/v1/ai';
+  private baseUrl = this.resolveBaseUrl();
 
   constructor(private http: HttpClient) {}
+
+  private resolveBaseUrl(): string {
+    const runtimeWindow = typeof window !== 'undefined' ? (window as any) : undefined;
+    return runtimeWindow?.__env?.apiBaseUrl || 'http://localhost:8081/api/v1/ai';
+  }
 
   generateImage(request: TextToImageRequest): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/generate-image`, request);

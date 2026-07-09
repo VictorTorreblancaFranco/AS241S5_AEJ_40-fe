@@ -1,1 +1,62 @@
-<p>logs works!</p>
+<section class="logs-page">
+  <div class="page-heading">
+    <p class="eyebrow">Historial</p>
+    <h1>Actividad reciente de las consultas</h1>
+  </div>
+
+  <section class="toolbar">
+    <label class="field">
+      <span>API</span>
+      <select [(ngModel)]="selectedApi" (change)="loadLogs()">
+        <option value="">Todas</option>
+        <option value="Text to Image Generator">Text to Image</option>
+        <option value="URL Reader">Traductor de URL</option>
+      </select>
+    </label>
+
+    <button type="button" class="refresh" (click)="loadLogs()" [disabled]="loading">
+      {{ loading ? 'Cargando...' : 'Refrescar' }}
+    </button>
+  </section>
+
+  <p *ngIf="error" class="notice error">{{ error }}</p>
+
+  <div *ngIf="loading" class="loading-state">
+    <span class="spinner"></span>
+    <strong>Cargando historial</strong>
+  </div>
+
+  <div *ngIf="logs.length === 0 && !loading && !error" class="empty-state">
+    <strong>No hay consultas registradas</strong>
+    <span>Cuando uses las APIs, sus registros aparecerán en esta vista.</span>
+  </div>
+
+  <div *ngIf="logs.length > 0" class="logs-list">
+    <article *ngFor="let log of logs" class="log-card">
+      <header class="log-header">
+        <div>
+          <h2>{{ log.apiName }}</h2>
+          <time>{{ log.callTime | date:'medium' }}</time>
+        </div>
+        <span class="status" [class.success]="log.status === 'SUCCESS'" [class.error]="log.status === 'ERROR'">
+          {{ log.status }}
+        </span>
+      </header>
+
+      <details>
+        <summary>Ver detalles</summary>
+        <div class="log-details">
+          <section>
+            <h3>Request</h3>
+            <pre>{{ formatJson(log.requestData) }}</pre>
+          </section>
+          <section>
+            <h3>Response</h3>
+            <pre>{{ formatJson(log.responseData) }}</pre>
+          </section>
+          <p *ngIf="log.errorMessage" class="notice error">{{ log.errorMessage }}</p>
+        </div>
+      </details>
+    </article>
+  </div>
+</section>

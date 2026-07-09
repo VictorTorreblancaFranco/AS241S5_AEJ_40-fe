@@ -1,1 +1,67 @@
-<p>instagram-transcript works!</p>
+<section class="tool-page">
+  <div class="page-heading">
+    <p class="eyebrow">Instagram Transcript</p>
+    <h1>Transcribe reels con RapidAPI</h1>
+  </div>
+
+  <div class="workspace-grid">
+    <form class="tool-panel" (ngSubmit)="getTranscript()">
+      <label class="field">
+        <span>URL del Reel</span>
+        <input
+          type="url"
+          [(ngModel)]="videoUrl"
+          name="videoUrl"
+          placeholder="https://www.instagram.com/reel/..."
+        />
+      </label>
+
+      <label class="field">
+        <span>Traducir a</span>
+        <select [(ngModel)]="language" name="language">
+          <option value="">Mantener idioma original</option>
+          <option value="es">Español</option>
+          <option value="en">Inglés</option>
+          <option value="pt">Portugués</option>
+        </select>
+      </label>
+
+      <button class="primary-action" type="submit" [disabled]="loading">
+        <span class="button-icon" aria-hidden="true"></span>
+        {{ loading ? 'Procesando...' : 'Procesar URL' }}
+      </button>
+
+      <p *ngIf="error" class="notice error">{{ error }}</p>
+    </form>
+
+    <section class="reader-panel" aria-live="polite">
+      <div class="results-header">
+        <div>
+          <p class="eyebrow">Texto</p>
+          <h2>{{ transcript ? 'Texto listo' : 'Sin contenido' }}</h2>
+        </div>
+      </div>
+
+      <div *ngIf="loading" class="loading-state">
+        <span class="spinner"></span>
+        <strong>Transcribiendo video</strong>
+      </div>
+
+      <div *ngIf="!loading && !transcript" class="empty-state">
+        <strong>Pega un Reel para empezar</strong>
+        <span>El backend enviará la URL a RapidAPI para obtener la transcripción.</span>
+      </div>
+
+      <article *ngIf="transcript" class="transcript-box">
+        <p>{{ transcript }}</p>
+      </article>
+
+      <section *ngIf="segments.length > 0" class="segments">
+        <h3>Contenido</h3>
+        <ol>
+          <li *ngFor="let segment of segments">{{ segment }}</li>
+        </ol>
+      </section>
+    </section>
+  </div>
+</section>

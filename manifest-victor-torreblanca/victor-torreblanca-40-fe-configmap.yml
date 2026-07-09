@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: victor-torreblanca-40-fe-configmap
+  namespace: victor-torreblanca-40-namespace
+data:
+  env.js: |
+    window.__env = {
+      apiBaseUrl: 'http://localhost:8081/api/v1/ai'
+    };

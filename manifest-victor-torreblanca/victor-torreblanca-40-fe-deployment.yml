@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: victor-torreblanca-40-fe-deployment
+  namespace: victor-torreblanca-40-namespace
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: victor-torreblanca-40-fe
+  template:
+    metadata:
+      labels:
+        app: victor-torreblanca-40-fe
+    spec:
+      containers:
+      - name: victor-torreblanca-40-fe-container
+        image: victor2202/aej-fe:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: frontend-env
+          mountPath: /usr/share/nginx/html/env.js
+          subPath: env.js
+      volumes:
+      - name: frontend-env
+        configMap:
+          name: victor-torreblanca-40-fe-configmap

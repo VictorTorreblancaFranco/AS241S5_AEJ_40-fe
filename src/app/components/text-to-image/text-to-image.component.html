@@ -1,1 +1,80 @@
-<p>text-to-image works!</p>
+<section class="tool-page">
+  <div class="page-heading">
+    <p class="eyebrow">Generador de imagen</p>
+    <h1>Convierte prompts en visuales listos para descargar</h1>
+  </div>
+
+  <div class="workspace-grid">
+    <form class="tool-panel" (ngSubmit)="generateImage()">
+      <label class="field">
+        <span>Prompt</span>
+        <textarea
+          [(ngModel)]="prompt"
+          name="prompt"
+          rows="8"
+          placeholder="Ejemplo: retrato editorial de una cafetería futurista al atardecer"
+        ></textarea>
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Estilo</span>
+          <select [(ngModel)]="styleId" name="styleId">
+            <option [ngValue]="4">Cinemático</option>
+            <option [ngValue]="1">Realista</option>
+            <option [ngValue]="2">Ilustración</option>
+            <option [ngValue]="3">Arte digital</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Formato</span>
+          <select [(ngModel)]="size" name="size">
+            <option value="1-1">Cuadrado</option>
+            <option value="16-9">Horizontal</option>
+            <option value="9-16">Vertical</option>
+          </select>
+        </label>
+      </div>
+
+      <button class="primary-action" type="submit" [disabled]="loading">
+        <span class="button-icon" aria-hidden="true"></span>
+        {{ loading ? 'Generando...' : 'Generar imagen' }}
+      </button>
+
+      <p *ngIf="successMessage" class="notice success">{{ successMessage }}</p>
+      <p *ngIf="error" class="notice error">{{ error }}</p>
+    </form>
+
+    <section class="results-panel" aria-live="polite">
+      <div class="results-header">
+        <div>
+          <p class="eyebrow">Resultado</p>
+          <h2>{{ images.length ? images.length + ' imagen(es)' : 'Vista previa' }}</h2>
+        </div>
+      </div>
+
+      <div *ngIf="!images.length && !loading" class="empty-state">
+        <strong>Sin imágenes todavía</strong>
+        <span>Escribe un prompt y genera tu primera propuesta visual.</span>
+      </div>
+
+      <div *ngIf="loading" class="loading-state">
+        <span class="spinner"></span>
+        <strong>Procesando solicitud</strong>
+      </div>
+
+      <div *ngIf="images.length > 0" class="image-grid">
+        <figure *ngFor="let img of images; let i = index" class="image-result">
+          <img [src]="img" [alt]="'Imagen generada ' + (i + 1)" (error)="onImageError(img, i)" />
+          <figcaption>
+            <span>Imagen {{ i + 1 }}</span>
+            <button type="button" class="secondary-action" (click)="downloadImage(img, i + 1)">
+              Abrir
+            </button>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  </div>
+</section>
